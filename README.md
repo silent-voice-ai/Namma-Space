@@ -9,34 +9,34 @@ Browser-Based 3D Canvas: Lightweight WebGL rendering engine using Three.js and P
 Low Hardware Footprint: Designed to run on standard PC/laptop CPUs within strict execution windows.
 
 🏗️ Technical Architecture & Pipeline
-┌─────────────────────────┐
-│ Smartphone Indoor Video │
-└────────────┬────────────┘
-             │
-             ▼  [Step 1: Frame Extraction]
- ┌───────────────────────┐
- │   OpenCV (Python)     │  Extracts frames at consistent spatial intervals
- └───────────┬───────────┘
-             │
-             ▼  [Step 2: Feature Spotting & Matching]
- ┌───────────────────────┐  Extracts SIFT keypoints & runs sequential
- │       pycolmap        │  matching across adjacent frames (overlap=10)
- └───────────┬───────────┘
-             │
-             ▼  [Step 3: Sparse 3D Reconstruction]
- ┌───────────────────────┐  Structure-from-Motion (SfM) calculates 3D
- │ incremental_mapping   │  point coordinates and camera trajectories
- └───────────┬───────────┘
-             │
-             ▼  [Step 4: Output Model]
- ┌───────────────────────┐
- │   sparse_model/*.ply  │  Generates 3D spatial point cloud file
- └───────────┬───────────┘
-             │
-             ▼  [Step 5: Interactive Web Viewer]
- ┌───────────────────────┐
- │   Three.js + WebGL    │  Renders PLY point cloud into interactive canvas
- └───────────────────────┘
+         ┌─────────────────────────┐
+         │ Smartphone Indoor Video │
+         └────────────┬────────────┘
+                      │
+                      ▼  [Step 1: Frame Extraction]
+          ┌───────────────────────┐
+          │   OpenCV (Python)     │  Extracts frames at consistent spatial intervals
+          └───────────┬───────────┘
+                      │
+                      ▼  [Step 2: Feature Spotting & Matching]
+         ┌───────────────────────┐  Extracts SIFT keypoints & runs sequential
+         │       pycolmap        │  matching across adjacent frames (overlap=10)
+         └───────────┬───────────┘
+                     │
+                     ▼  [Step 3: Sparse 3D Reconstruction]
+        ┌───────────────────────┐  Structure-from-Motion (SfM) calculates 3D
+        │ incremental_mapping   │  point coordinates and camera trajectories
+        └───────────┬───────────┘
+                    │
+                    ▼  [Step 4: Output Model]
+        ┌───────────────────────┐
+        │   sparse_model/*.ply  │  Generates 3D spatial point cloud file
+        └───────────┬───────────┘
+                    │
+                    ▼  [Step 5: Interactive Web Viewer]
+       ┌───────────────────────┐
+       │   Three.js + WebGL    │  Renders PLY point cloud into interactive canvas
+       └───────────────────────┘
 
 📁 Repository Structure
 3D indoor/
