@@ -1,0 +1,19 @@
+# Ignore raw videos and extracted frames
+*.mp4
+*.MOV
+*.avi
+frames/
+downsampled_frames/
+
+# Ignore intermediate SQLite database
+database.db
+
+# Ignore heavy output models and point clouds
+sparse_model/
+*.ply
+
+# Python / IDE junk
+__pycache__/
+*.pyc
+.vscode/
+.idea/
