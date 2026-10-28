@@ -60,64 +60,24 @@ Low Hardware Footprint: Designed to run on standard PC/laptop CPUs within strict
 1. Prerequisites
 
 Ensure Python 3.10+ is installed on your system. Install the required dependencies:
-
 pip install opencv-python pycolmap pathlib
-
 
 2. Video Frame Extraction
 
 Place your walkthrough video in the project directory and run:
-
 python extract_frames.py
-
 
 3. Run Sparse 3D Reconstruction
 
 Execute the main pipeline to generate the keypoint database and sparse 3D point cloud:
-
 python run_colmap.py
 
-
-This script executes Feature Extraction, Sequential Matching (overlap=10), and Incremental Mapping sequentially.
-
-4. Launch the WebGL 3D Viewer
-
-To bypass browser CORS restrictions when loading local .ply models, start a simple HTTP server:
-
-python -m http.server 8000
-
-
-Open your browser and navigate to:
-
-http://localhost:8000
-
+This script executes Feature Extraction, Sequential Matching (overlap=10), and Incremental Mapping sequentially
 
 ⚡ Performance Tuning & Troubleshooting
-
-Issue
-
-Root Cause
-
-Resolution
-
-database.db does not exist
-
-Feature extraction step skipped or aborted
-
-Ensure pycolmap.extract_features() executes prior to matching
-
-Fragmented 3D Model
-
-Insufficient overlap during camera turns
-
-Increase sequential overlap window (pairing_options={"overlap": 10})
-
-Browser CORS Error
-
-Loading index.html directly via file:// protocol
-
-Serve files via local server using python -m http.server 8000
-
-🎯 Competition Context
-
-Developed for IIT Bombay Techfest / SparkX Challenge.
+__________________________________________________________________________________________________________________________________________
+|Issue                                        Root Cause                                   Resolution                                    
+|_________________________________________________________________________________________________________________________________________
+|database.db does not exist         Feature extraction step skipped or aborted      Ensure pycolmap.extract_features() executes prior   |matching                           Insufficient overlap during camera turns        Increase sequential overlap window (pairing_options=  |                                                                                                                         {"overlap": 10})
+|Browser CORS Error                 Loading index.html directly via file:// protocol  Serve files via local server using python -m        |                                                                                                                         http.server 8000
+__________________________________________________________________________________________________________________________________________ 
