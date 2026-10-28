@@ -6,8 +6,6 @@ I'm a high school STEM student and software developer passionate about **Artific
 
 ### 🚀 What I'm Building:
 * **[Namma Space]** – A local CPU-based 3D indoor spatial reconstruction pipeline using OpenCV, `pycolmap` (SfM), and Three.js.
-* **[ISL Helper]** – A computer vision pipeline utilizing MediaPipe landmark tracking (126 features) and Random Forest classifiers for Indian Sign Language translation.
-* **[BUDDY 3.0 — Money Multiverse]** – An offline-first financial management web application built with React, Tailwind CSS, and Chart.js.
 
 ---
 
