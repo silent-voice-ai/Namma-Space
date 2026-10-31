@@ -1,165 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Namma Space - 3D Room Viewer</title>
-    <style>
-        body { 
-            margin: 0; 
-            background: #0d1117; 
-            color: #fff; 
-            font-family: sans-serif; 
-            overflow: hidden; 
-        }
-        #canvas-container { 
-            width: 100vw; 
-            height: 100vh; 
-        }
-        #ui { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            background: rgba(0, 0, 0, 0.85); 
-            padding: 15px 20px; 
-            border-radius: 8px; 
-            border: 1px solid #30363d;
-            pointer-events: none;
-        }
-        h2 { margin: 0 0 5px 0; font-size: 18px; color: #58a6ff; }
-        p { margin: 0; font-size: 13px; color: #8b949e; }
-        #status { margin-top: 8px; font-weight: bold; color: #3fb950; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAMMA SPACE — 3D Reconstruction Engine</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="ui">
-        <h2>Namma Space — Room Viewer</h2>
-        <p>Left-click + Drag to rotate | Right-click + Drag to pan | Scroll to zoom</p>
-        <div id="status">Processing model...</div>
-    </div>
-    <div id="canvas-container"></div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+  <!-- Main 3D Scene Viewport -->
+  <div id="canvas-container"></div>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+  <!-- Top-Left Branding HUD -->
+  <div class="hud-panel top-left">
+    <div class="brand-title">NAMMA SPACE</div>
+    <div class="brand-sub">EDGE-NATIVE 3DGS ENGINE</div>
+    <div class="stat-line">STATUS: <span id="sys-status">INITIALIZING...</span></div>
+  </div>
 
-        const container = document.getElementById('canvas-container');
-        const statusDiv = document.getElementById('status');
-        
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0d1117);
+  <!-- Bottom Control Overlay -->
+  <div class="hud-panel bottom-center">
+    <p>Drag to look | WASD to move | Scroll to zoom</p>
+  </div>
 
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.5, 4);
+  <!-- Top-Right Minimap Container -->
+  <div class="hud-panel top-right">
+    <div class="minimap-header">PLAN / TOP DOWN</div>
+    <div id="minimap-viewport"></div>
+  </div>
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
+  <!-- Three.js ES Module Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+      }
+    }
+  </script>
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-
-        // --- AUTO-ROTATION SETTINGS ---
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 1.2; // Adjust speed if you want it faster or slower
-
-        // Reference grid at the floor level
-        const gridHelper = new THREE.GridHelper(10, 10, 0x58a6ff, 0x30363d);
-        gridHelper.position.y = -1;
-        scene.add(gridHelper);
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-        scene.add(ambientLight);
-
-        const loader = new PLYLoader();
-        loader.load(
-            'namma_space_model.ply', 
-            function (geometry) {
-                geometry.computeBoundingBox();
-                geometry.center();
-
-                const positions = geometry.attributes.position;
-                const colors = geometry.attributes.color;
-                
-                const validPositions = [];
-                const validColors = [];
-                const count = positions.count;
-
-                const maxHeightRange = 0.8; 
-                const maxRadius = 2.0;      
-
-                for (let i = 0; i < count; i++) {
-                    const x = positions.getX(i);
-                    const y = positions.getY(i);
-                    const z = positions.getZ(i);
-
-                    const radialDist = Math.sqrt(x*x + z*z);
-
-                    if (Math.abs(y) <= maxHeightRange && radialDist <= maxRadius) {
-                        validPositions.push(x, y, z);
-                        if (colors) {
-                            validColors.push(colors.getX(i), colors.getY(i), colors.getZ(i));
-                        }
-                    }
-                }
-
-                const cleanGeometry = new THREE.BufferGeometry();
-                cleanGeometry.setAttribute('position', new THREE.Float32BufferAttribute(validPositions, 3));
-                if (validColors.length > 0) {
-                    cleanGeometry.setAttribute('color', new THREE.Float32BufferAttribute(validColors, 3));
-                }
-                cleanGeometry.computeVertexNormals();
-
-                const material = new THREE.PointsMaterial({ 
-                    size: 0.07, 
-                    vertexColors: true,
-                    transparent: true,
-                    opacity: 0.9,
-                    blending: THREE.AdditiveBlending
-                });
-
-                const pointCloud = new THREE.Points(cleanGeometry, material);
-                pointCloud.rotation.x = Math.PI; 
-                scene.add(pointCloud);
-
-                const finalCount = validPositions.length / 3;
-                statusDiv.innerText = `Auto-Rotating View (${finalCount.toLocaleString()} points)`;
-            }, 
-            (xhr) => {
-                const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
-                if(!isNaN(percent)) statusDiv.innerText = `Loading: ${percent}%`;
-            }, 
-            (error) => {
-                console.error('Error loading PLY:', error);
-                statusDiv.style.color = '#f85149';
-                statusDiv.innerText = 'Error loading file!';
-            }
-        );
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); // Crucial for auto-rotation to tick smoothly
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
+  <!-- Main Application Script -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>
