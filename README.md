@@ -1,4 +1,5 @@
 Namma Space
+
 (⁠nammaspace-3d.netlify.app⁠)
 Overview
 Namma Space is a custom-coded web-based 3D spatial mapping and viewing platform. Designed for indoor navigation and spatial data visualization, the project utilizes a custom data processing pipeline and a Three.js rendering engine to deliver an interactive web experience without relying on external, pre-rendered 3D Gaussian Splat assets.
